@@ -120,6 +120,23 @@
   }
   #copy-btn:hover{background-color:#243761 !important;}
   #copy-btn.copied{background-color:#3f7a4d !important;}
+  /* New clear button style */
+  #clear-btn{
+    margin-top:8px;
+    width:100%;
+    padding:12px;
+    background:#e9e9e9;
+    color:#222;
+    border:none;
+    font-family:Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    cursor:pointer;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  #clear-btn:hover{background:#d6d6d6;}
   .toggle-code{
     margin-top:10px;
     background:none;
@@ -195,6 +212,7 @@
     <h2>Preview</h2>
     <div id="sig-preview"></div>
     <button id="copy-btn" onclick="copySignature()">Copy Signature</button>
+    <button id="clear-btn" onclick="clearInputs()">Clear Inputs</button>
     <button class="toggle-code" onclick="toggleCode()">Show HTML source code</button>
     <textarea id="code-box" readonly></textarea>
   </section>
@@ -288,6 +306,13 @@ async function copySignature(){
 
   sel.removeAllRanges();
   document.body.removeChild(temp);
+}
+
+function clearInputs(){
+  const ids = ['name','title','address','email','phone','ext','website','logo'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  render();
+  const first = document.getElementById('name'); if(first) first.focus();
 }
 
 function toggleCode(){
