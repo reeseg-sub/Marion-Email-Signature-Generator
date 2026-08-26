@@ -236,22 +236,53 @@ function render(){
   document.getElementById('code-box').value = html;
 }
 
-function copySignature(){
-  const preview = document.getElementById('sig-preview');
-  const range = document.createRange();
-  range.selectNode(preview);
-  window.getSelection().removeAllRanges();
-  window.getSelection().addRange(range);
-  try{
-    document.execCommand('copy');
-    const btn = document.getElementById('copy-btn');
+async function copySignature(){
+  const html = buildSignatureHTML();
+  const plain = document.getElementById('sig-preview').innerText;
+  const btn = document.getElementById('copy-btn');
+
+  function showCopied(){
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
     setTimeout(()=>{ btn.textContent='Copy Signature'; btn.classList.remove('copied'); }, 1800);
-  }catch(e){
-    alert('Copy failed — try selecting the preview manually.');
   }
-  window.getSelection().removeAllRanges();
+
+  // Preferred: Clipboard API with explicit HTML + plain text, no DOM selection involved
+  if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+    try{
+      const item = new ClipboardItem({
+        'text/html': new Blob([html], {type:'text/html'}),
+        'text/plain': new Blob([plain], {type:'text/plain'})
+      });
+      await navigator.clipboard.write([item]);
+      showCopied();
+      return;
+    }catch(e){ /* fall through to fallback below */ }
+  }
+
+  // Fallback: build a temporary, isolated element containing ONLY the signature,
+  // positioned off-screen, so nothing else on the page can be included.
+  const temp = document.createElement('div');
+  temp.style.position = 'fixed';
+  temp.style.left = '-9999px';
+  temp.innerHTML = html;
+  document.body.appendChild(temp);
+
+  const range = document.createRange();
+  range.selectNodeContents(temp);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  try{
+    document.execCommand('copy');
+    showCopied();
+  }catch(e){
+    alert('Copy failed — use "Show HTML source code" below and copy it manually instead.');
+  }
+
+  sel.removeAllRanges();
+  document.body.removeChild(temp);
 }
 
 function toggleCode(){
