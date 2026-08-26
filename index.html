@@ -99,7 +99,6 @@
   .row2{display:grid; grid-template-columns:2fr 1fr; gap:10px;}
 
   #sig-preview{
-    border:1px solid var(--line);
     padding:20px;
     background:#fff;
     min-height:120px;
@@ -108,17 +107,19 @@
     margin-top:16px;
     width:100%;
     padding:12px;
-    background:var(--navy);
-    color:#fff;
+    background-color:#1B2A4A !important;
+    color:#ffffff !important;
     border:none;
     font-family:Arial, sans-serif;
     font-size:13px;
     letter-spacing:0.5px;
     text-transform:uppercase;
     cursor:pointer;
+    -webkit-appearance:none;
+    appearance:none;
   }
-  #copy-btn:hover{background:#243761;}
-  #copy-btn.copied{background:#3f7a4d;}
+  #copy-btn:hover{background-color:#243761 !important;}
+  #copy-btn.copied{background-color:#3f7a4d !important;}
   .toggle-code{
     margin-top:10px;
     background:none;
