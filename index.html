@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marion Signature Generator</title>
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --gold:#C9A24B;
+    --paper:#F7F5F0;
+    --ink:#22262E;
+    --line:#DCD6C8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:Georgia, 'Times New Roman', serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:28px 32px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  header img{
+    height:44px;
+    width:auto;
+  }
+  header h1{
+    font-size:20px;
+    font-weight:normal;
+    letter-spacing:0.5px;
+    margin:0;
+  }
+  header p{
+    margin:2px 0 0;
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:0.5px;
+  }
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:32px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  @media (max-width:760px){
+    main{grid-template-columns:1fr;}
+  }
+  .panel{
+    background:#fff;
+    border:1px solid var(--line);
+    padding:24px;
+  }
+  .panel h2{
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--navy);
+    border-bottom:2px solid var(--gold);
+    padding-bottom:8px;
+    margin:0 0 18px;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:#666;
+    margin:14px 0 4px;
+  }
+  label:first-of-type{margin-top:0;}
+  input, select{
+    width:100%;
+    padding:9px 10px;
+    font-family:inherit;
+    font-size:14px;
+    border:1px solid var(--line);
+    background:#fdfcfa;
+    color:var(--ink);
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--navy);
+  }
+  .hint{
+    font-size:11px;
+    color:#888;
+    margin-top:3px;
+    font-family:Arial, sans-serif;
+  }
+  .row2{display:grid; grid-template-columns:2fr 1fr; gap:10px;}
+
+  #sig-preview{
+    border:1px solid var(--line);
+    padding:20px;
+    background:#fff;
+    min-height:120px;
+  }
+  #copy-btn{
+    margin-top:16px;
+    width:100%;
+    padding:12px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    font-family:Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  #copy-btn:hover{background:#243761;}
+  #copy-btn.copied{background:#3f7a4d;}
+  .toggle-code{
+    margin-top:10px;
+    background:none;
+    border:none;
+    color:var(--navy);
+    font-family:Arial, sans-serif;
+    font-size:12px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:0;
+  }
+  #code-box{
+    display:none;
+    width:100%;
+    height:140px;
+    margin-top:10px;
+    font-family:'Courier New', monospace;
+    font-size:11px;
+    padding:10px;
+    border:1px solid var(--line);
+  }
+  footer{
+    text-align:center;
+    padding:24px;
+    font-size:11px;
+    color:#999;
+    font-family:Arial, sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img id="logo-preview" src="https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png" alt="Marion logo" onerror="this.style.display='none'">
+  <div>
+    <h1>Marion Email Signature Generator</h1>
+    <p>Fill in your details, then copy your finished signature</p>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Your Details</h2>
+
+    <label for="name">Full Name</label>
+    <input id="name" type="text" placeholder="Jane Smith" oninput="render()">
+
+    <label for="title">Title / Department</label>
+    <input id="title" type="text" placeholder="Front Office Coordinator" oninput="render()">
+
+    <label for="email">Email Address</label>
+    <input id="email" type="email" placeholder="jsmith@marion.edu" oninput="render()">
+
+    <label>Phone Number &amp; Extension</label>
+    <div class="row2">
+      <input id="phone" type="text" placeholder="(555) 123-4567" oninput="render()">
+      <input id="ext" type="text" placeholder="Ext. 214" oninput="render()">
+    </div>
+    <div class="hint">Main school line stays the same for everyone — just change the extension.</div>
+
+    <label for="website">Website (optional)</label>
+    <input id="website" type="text" placeholder="www.marion.edu" oninput="render()">
+
+    <label for="logo">Logo URL</label>
+    <input id="logo" type="text" value="https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png" oninput="render()">
+    <div class="hint">Already set to the Marion logo hosted on GitHub — no need to change this.</div>
+  </section>
+
+  <section class="panel">
+    <h2>Preview</h2>
+    <div id="sig-preview"></div>
+    <button id="copy-btn" onclick="copySignature()">Copy Signature</button>
+    <button class="toggle-code" onclick="toggleCode()">Show HTML source code</button>
+    <textarea id="code-box" readonly></textarea>
+  </section>
+</main>
+
+<footer>Paste the copied signature into your email client's signature settings (Gmail, Outlook, Apple Mail, HubSpot, etc).</footer>
+
+<script>
+function buildSignatureHTML(){
+  const name = document.getElementById('name').value || 'Your Name';
+  const title = document.getElementById('title').value || '';
+  const email = document.getElementById('email').value || '';
+  const phone = document.getElementById('phone').value || '';
+  const ext = document.getElementById('ext').value || '';
+  const website = document.getElementById('website').value || '';
+  const logo = document.getElementById('logo').value || '';
+
+  const phoneLine = [phone, ext].filter(Boolean).join(' &nbsp;·&nbsp; ');
+
+  let rows = '';
+  if(title) rows += `<div style="color:#555;">${title}</div>`;
+  if(phoneLine) rows += `<div style="margin-top:4px;">${phoneLine}</div>`;
+  if(email) rows += `<div style="margin-top:2px;"><a href="mailto:${email}" style="color:#1B2A4A; text-decoration:none;">${email}</a></div>`;
+  if(website) rows += `<div style="margin-top:2px;"><a href="https://${website.replace(/^https?:\/\//,'')}" style="color:#1B2A4A; text-decoration:none;">${website}</a></div>`;
+
+  return `<table cellpadding="0" cellspacing="0" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; color:#22262E;">
+  <tr>
+    <td style="padding-right:16px; border-right:2px solid #C9A24B;">
+      <img src="${logo}" alt="Marion logo" style="height:56px; width:auto; display:block;">
+    </td>
+    <td style="padding-left:16px;">
+      <div style="font-size:15px; font-weight:bold; color:#1B2A4A;">${name}</div>
+      ${rows}
+    </td>
+  </tr>
+</table>`;
+}
+
+function render(){
+  const html = buildSignatureHTML();
+  document.getElementById('sig-preview').innerHTML = html;
+  document.getElementById('code-box').value = html;
+}
+
+function copySignature(){
+  const preview = document.getElementById('sig-preview');
+  const range = document.createRange();
+  range.selectNode(preview);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  try{
+    document.execCommand('copy');
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='Copy Signature'; btn.classList.remove('copied'); }, 1800);
+  }catch(e){
+    alert('Copy failed — try selecting the preview manually.');
+  }
+  window.getSelection().removeAllRanges();
+}
+
+function toggleCode(){
+  const box = document.getElementById('code-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+render();
+</script>
+
+</body>
+</html>
