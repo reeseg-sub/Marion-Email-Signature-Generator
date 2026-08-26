@@ -170,6 +170,9 @@
     <label for="title">Title / Department</label>
     <input id="title" type="text" placeholder="Front Office Coordinator" oninput="render()">
 
+    <label for="address">Address</label>
+    <input id="address" type="text" placeholder="1234 School Rd, Marion, OH 43302" oninput="render()">
+
     <label for="email">Email Address</label>
     <input id="email" type="email" placeholder="jsmith@marion.edu" oninput="render()">
 
@@ -201,8 +204,9 @@
 
 <script>
 function buildSignatureHTML(){
-  const name = document.getElementById('name').value || 'Your Information';
+  const name = document.getElementById('name').value || 'Your Name';
   const title = document.getElementById('title').value || '';
+  const address = document.getElementById('address').value || '';
   const email = document.getElementById('email').value || '';
   const phone = document.getElementById('phone').value || '';
   const ext = document.getElementById('ext').value || '';
@@ -213,8 +217,9 @@ function buildSignatureHTML(){
 
   let rows = '';
   if(title) rows += `<div style="color:#555;">${title}</div>`;
-  if(phoneLine) rows += `<div style="margin-top:4px;">${phoneLine}</div>`;
+  if(address) rows += `<div style="margin-top:4px;">${address}</div>`;
   if(email) rows += `<div style="margin-top:2px;"><a href="mailto:${email}" style="color:#1B2A4A; text-decoration:none;">${email}</a></div>`;
+  if(phoneLine) rows += `<div style="margin-top:2px;">${phoneLine}</div>`;
   if(website) rows += `<div style="margin-top:2px;"><a href="https://${website.replace(/^https?:\/\//,'')}" style="color:#1B2A4A; text-decoration:none;">${website}</a></div>`;
 
   return `<table cellpadding="0" cellspacing="0" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; color:#22262E;">
