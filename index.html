@@ -221,6 +221,9 @@
 <footer>Paste the copied signature into your email client's signature settings (Gmail, Outlook, Apple Mail, HubSpot, etc).</footer>
 
 <script>
+// Keep a default logo so clearing inputs won't remove the signature image
+const DEFAULT_LOGO = 'https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png';
+
 function buildSignatureHTML(){
   const name = document.getElementById('name').value || 'Your Name';
   const title = document.getElementById('title').value || '';
@@ -229,7 +232,7 @@ function buildSignatureHTML(){
   const phone = document.getElementById('phone').value || '';
   const ext = document.getElementById('ext').value || '';
   const website = document.getElementById('website').value || '';
-  const logo = document.getElementById('logo').value || '';
+  const logo = document.getElementById('logo').value || DEFAULT_LOGO;
 
   const phoneLine = [phone, ext].filter(Boolean).join(' &nbsp;·&nbsp; ');
 
@@ -309,8 +312,11 @@ async function copySignature(){
 }
 
 function clearInputs(){
-  const ids = ['name','title','address','email','phone','ext','website','logo'];
+  // Keep the logo input set to the default so the preview image remains visible
+  const ids = ['name','title','address','email','phone','ext','website'];
   ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  const logoEl = document.getElementById('logo');
+  if(logoEl) logoEl.value = DEFAULT_LOGO;
   render();
   const first = document.getElementById('name'); if(first) first.focus();
 }
