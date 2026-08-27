@@ -187,6 +187,15 @@
     <label for="title">Title / Department</label>
     <input id="title" type="text" placeholder="Front Office Coordinator" oninput="render()">
 
+    <label for="building">School / Building</label>
+    <select id="building" onchange="render()">
+      <option value="">— Select —</option>
+      <option value="Marion High School">Marion High School</option>
+      <option value="Marion Middle School">Marion Middle School</option>
+      <option value="Marion Elementary School">Marion Elementary School</option>
+      <option value="District Office">District Office</option>
+    </select>
+
     <label for="address">Address</label>
     <input id="address" type="text" placeholder="1234 School Rd, Marion, OH 43302" oninput="render()">
 
@@ -195,7 +204,7 @@
 
     <label>Phone Number &amp; Extension</label>
     <div class="row2">
-      <input id="phone" type="text" placeholder="(555) 123-4567" oninput="render()">
+      <input id="phone" type="text" placeholder="(555) 123-4567" maxlength="14" oninput="formatPhone(this); render()">
       <input id="ext" type="text" placeholder="Ext. 214" oninput="render()">
     </div>
     <div class="hint">Main school line stays the same for everyone — just change the extension.</div>
@@ -227,6 +236,7 @@ const DEFAULT_LOGO = 'https://raw.githubusercontent.com/reeseg-sub/Marion-logo/m
 function buildSignatureHTML(){
   const name = document.getElementById('name').value || 'Your Name';
   const title = document.getElementById('title').value || '';
+  const building = document.getElementById('building').value || '';
   const address = document.getElementById('address').value || '';
   const email = document.getElementById('email').value || '';
   const phone = document.getElementById('phone').value || '';
@@ -238,6 +248,7 @@ function buildSignatureHTML(){
 
   let rows = '';
   if(title) rows += `<div style="color:#555;">${title}</div>`;
+  if(building) rows += `<div style="margin-top:2px;">${building}</div>`;
   if(address) rows += `<div style="margin-top:4px;">${address}</div>`;
   if(email) rows += `<div style="margin-top:2px;"><a href="mailto:${email}" style="color:#1B2A4A; text-decoration:none;">${email}</a></div>`;
   if(phoneLine) rows += `<div style="margin-top:2px;">${phoneLine}</div>`;
@@ -254,6 +265,15 @@ function buildSignatureHTML(){
     </td>
   </tr>
 </table>`;
+}
+
+function formatPhone(el){
+  const digits = el.value.replace(/\D/g,'').slice(0,10);
+  let out = digits;
+  if(digits.length > 6) out = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  else if(digits.length > 3) out = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+  else if(digits.length > 0) out = `(${digits}`;
+  el.value = out;
 }
 
 function render(){
@@ -315,6 +335,8 @@ function clearInputs(){
   // Keep the logo input set to the default so the preview image remains visible
   const ids = ['name','title','address','email','phone','ext','website'];
   ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  const buildingEl = document.getElementById('building');
+  if(buildingEl) buildingEl.value = '';
   const logoEl = document.getElementById('logo');
   if(logoEl) logoEl.value = DEFAULT_LOGO;
   render();
