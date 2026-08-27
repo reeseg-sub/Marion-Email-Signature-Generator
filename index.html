@@ -178,17 +178,17 @@
 </header>
 
 <main>
-  <section class="panel" id="your-details">
+  <section class="panel">
     <h2>Your Details</h2>
 
     <label for="name">Full Name</label>
-    <input id="name" type="text" placeholder="Jane Smith" oninput="onInputChange()">
+    <input id="name" type="text" placeholder="Jane Smith" oninput="render()">
 
     <label for="title">Title / Department</label>
-    <input id="title" type="text" placeholder="Front Office Coordinator" oninput="onInputChange()">
+    <input id="title" type="text" placeholder="Front Office Coordinator" oninput="render()">
 
     <label for="building">School / Building</label>
-    <select id="building" onchange="onInputChange()">
+    <select id="building" onchange="render()">
       <option value="">— Select —</option>
       <option value="Marion High School">Marion High School</option>
       <option value="Marion Middle School">Marion Middle School</option>
@@ -197,23 +197,23 @@
     </select>
 
     <label for="address">Address</label>
-    <input id="address" type="text" placeholder="1234 School Rd, Marion, OH 43302" oninput="onInputChange()">
+    <input id="address" type="text" placeholder="1234 School Rd, Marion, OH 43302" oninput="render()">
 
     <label for="email">Email Address</label>
-    <input id="email" type="email" placeholder="jsmith@marion.edu" oninput="onInputChange()">
+    <input id="email" type="email" placeholder="jsmith@marion.edu" oninput="render()">
 
     <label>Phone Number &amp; Extension</label>
     <div class="row2">
-      <input id="phone" type="text" placeholder="(555) 123-4567" maxlength="14" oninput="formatPhone(this); onInputChange()">
-      <input id="ext" type="text" placeholder="Ext. 214" oninput="onInputChange()">
+      <input id="phone" type="text" placeholder="(555) 123-4567" maxlength="14" oninput="formatPhone(this); render()">
+      <input id="ext" type="text" placeholder="Ext. 214" oninput="render()">
     </div>
     <div class="hint">Main school line stays the same for everyone — just change the extension.</div>
 
     <label for="website">Website (optional)</label>
-    <input id="website" type="text" placeholder="www.marion.edu" oninput="onInputChange()">
+    <input id="website" type="text" placeholder="www.marion.edu" oninput="render()">
 
     <label for="logo">Logo URL</label>
-    <input id="logo" type="text" value="https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png" oninput="onInputChange()">
+    <input id="logo" type="text" value="https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png" oninput="render()">
     <div class="hint">Already set to the Marion logo hosted on GitHub — no need to change this.</div>
   </section>
 
@@ -234,7 +234,7 @@
 const DEFAULT_LOGO = 'https://raw.githubusercontent.com/reeseg-sub/Marion-logo/main/Marion%20Logo.png';
 
 function buildSignatureHTML(){
-  const name = document.getElementById('name').value || 'Your Information';
+  const name = document.getElementById('name').value || 'Your Name';
   const title = document.getElementById('title').value || '';
   const building = document.getElementById('building').value || '';
   const address = document.getElementById('address').value || '';
@@ -274,38 +274,6 @@ function formatPhone(el){
   else if(digits.length > 3) out = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
   else if(digits.length > 0) out = `(${digits}`;
   el.value = out;
-}
-
-function hasUserInput(){
-  // Consider user input present if any main fields are non-empty, or the logo differs from the default
-  const fields = ['name','title','address','email','phone','ext','website','building'];
-  for(const id of fields){
-    const el = document.getElementById(id);
-    if(el && el.value && el.value.trim() !== '') return true;
-  }
-  const logoEl = document.getElementById('logo');
-  if(logoEl && logoEl.value.trim() !== '' && logoEl.value.trim() !== DEFAULT_LOGO) return true;
-  return false;
-}
-
-function onInputChange(){
-  render();
-  const details = document.getElementById('your-details');
-  if(details){
-    if(hasUserInput()){
-      // hide with a smooth fade to avoid jarring layout shift
-      details.style.transition = 'opacity 240ms ease-in-out, height 240ms ease-in-out';
-      details.style.opacity = '0';
-      details.style.height = '0';
-      setTimeout(()=>{ details.style.display = 'none'; }, 250);
-    }else{
-      details.style.display = 'block';
-      // reset transitions and styles
-      details.style.transition = '';
-      details.style.opacity = '1';
-      details.style.height = '';
-    }
-  }
 }
 
 function render(){
@@ -365,18 +333,13 @@ async function copySignature(){
 
 function clearInputs(){
   // Keep the logo input set to the default so the preview image remains visible
-  const ids = ['name','title','address','email','phone','ext','website','building'];
+  const ids = ['name','title','address','email','phone','ext','website'];
   ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  const buildingEl = document.getElementById('building');
+  if(buildingEl) buildingEl.value = '';
   const logoEl = document.getElementById('logo');
   if(logoEl) logoEl.value = DEFAULT_LOGO;
   render();
-  // show the details panel again when clearing
-  const details = document.getElementById('your-details');
-  if(details){
-    details.style.display = 'block';
-    details.style.opacity = '1';
-    details.style.height = '';
-  }
   const first = document.getElementById('name'); if(first) first.focus();
 }
 
