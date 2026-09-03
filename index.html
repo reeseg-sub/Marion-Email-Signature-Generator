@@ -206,7 +206,7 @@
       <input id="phone" type="text" placeholder="(555) 123-4567" maxlength="14" oninput="formatPhone(this); render()">
       <input id="ext" type="text" placeholder="Ext. 214" oninput="render()">
     </div>
-    <div class="hint">Main school line stays the same for everyone — just change the extension.</div>
+    <div class="hint">Main school line stays the same for everyone — just change the extension. Enter digits only; "Ext." is added automatically.</div>
 
     <label for="website">Website (optional)</label>
     <input id="website" type="text" placeholder="www.marion.edu" oninput="render()">
@@ -239,9 +239,14 @@ function buildSignatureHTML(){
   const address = document.getElementById('address').value || '';
   const email = document.getElementById('email').value || '';
   const phone = document.getElementById('phone').value || '';
-  const ext = document.getElementById('ext').value || '';
+  const extRaw = document.getElementById('ext').value || '';
   const website = document.getElementById('website').value || '';
   const logo = document.getElementById('logo').value || DEFAULT_LOGO;
+
+  // Normalize whatever was typed (e.g. "214", "x214", "ext. 214") down to
+  // just the digits, then always display it as "Ext. ###".
+  const extDigits = extRaw.replace(/[^0-9]/g, '');
+  const ext = extDigits ? `Ext. ${extDigits}` : '';
 
   const phoneLine = [phone, ext].filter(Boolean).join(' &nbsp;·&nbsp; ');
 
